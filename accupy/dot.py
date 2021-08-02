@@ -30,6 +30,23 @@ def kdot(x, y, K=2):
     return ksum(r, K - 1)
 
 
+def kdot_full(x, y):
+    """Algorithm 5.10. Dot product algorithm in K-fold working precision,
+    K >= 3.
+
+    This returns the product over the axis without computing the sum
+    Leading and trailing axes are allowed
+    """
+    xx = x.reshape(-1, x.shape[-1])
+    yy = y.reshape(y.shape[0], -1)
+
+    xx = numpy.ascontiguousarray(xx)
+    yy = numpy.ascontiguousarray(yy)
+
+    r = _accupy.kdot_helper(xx, yy).transpose(2, 0, 1, 3).reshape(x.shape[:-1] + tuple([2 * x.shape[-1]]) + y.shape[1:])
+    return r
+
+
 def fdot(x, y):
     """Algorithm 5.10. Dot product algorithm in K-fold working precision,
     K >= 3.
